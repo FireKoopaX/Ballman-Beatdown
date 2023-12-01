@@ -36,12 +36,12 @@ jobs:
           haxelib --never install flixel
           haxelib run lime setup flixel
           haxelib run lime setup
-          haxelib install flixel 5.2.2
-          haxelib set flixel 5.2.2
+          haxelib install flixel 4.11.0
+          haxelib set flixel 4.11.0
           haxelib install flixel-tools
           haxelib install flixel-ui
-          haxelib install flixel-addons 3.0.2
-          haxelib set flixel-addons 3.0.2
+          haxelib install flixel-addons 2.11.0
+          haxelib set flixel-addons 2.11.0
           haxelib install extension-networking
           haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc
           haxelib list

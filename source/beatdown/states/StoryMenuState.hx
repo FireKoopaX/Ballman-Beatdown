@@ -27,12 +27,12 @@ class StoryMenuState extends FlxState
 		backgroundthing.velocity.set(-40, 40);
 		add(backgroundthing);
 
-		singleplayerButton = new FlxSprite().loadGraphic(AssetPaths.singleplayer__png);
+		singleplayerButton = new FlxSprite().loadGraphic(Paths.image('singleplayer'));
 		singleplayerButton.x = 1100;
 		singleplayerButton.screenCenter(Y);
 		add(singleplayerButton);
 
-		multiplayerButton = new FlxSprite().loadGraphic(AssetPaths.multiplayer__png);
+		multiplayerButton = new FlxSprite().loadGraphic(Paths.image('multiplayer'));
 		multiplayerButton.x = 1100;
 		multiplayerButton.y = 470;
 		add(multiplayerButton);
