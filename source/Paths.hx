@@ -19,4 +19,13 @@ class Paths
 			trace('hey man $file is returning null!!!!');
 		return null;
 	}
+
+	public static function font(file:String, FONT_EXT:String)
+	{
+		if (sys.FileSystem.exists('assets/fonts/$file.$FONT_EXT'))
+			return 'assets/fonts/$file.$FONT_EXT';
+		else
+			trace('hey man $file is returning null!!!!');
+		return null;
+	}
 }

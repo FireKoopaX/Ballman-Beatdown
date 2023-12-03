@@ -12,8 +12,9 @@ import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
-#if desktop
+#if discord_rpc
 import beatdown.system.Discord.DiscordClient;
+import beatdown.system.Discord;
 #end
 
 class TitleMenuState extends FlxState
@@ -84,6 +85,10 @@ class TitleMenuState extends FlxState
 			ease: FlxEase.cubeInOut
 		});
 
+		#if discord_rpc
+		DiscordClient.changePresence('In the Menus', null, 'main');
+		#end
+
 		super.create();
 	}
 
@@ -145,7 +150,8 @@ class TitleMenuState extends FlxState
 		switch (curSelected)
 		{
 			case 0:
-				FlxG.switchState(new StoryMenuState());
+				// FlxG.switchState(new StoryMenuState());
+				FlxG.switchState(new OnlineMenuState());
 			case 1:
 			// FlxG.switchState(new VersusMenuState());
 			case 2:
@@ -155,7 +161,7 @@ class TitleMenuState extends FlxState
 			case 5:
 			// fewiuhf
 			case 6:
-				// iuehwf
+				FlxG.switchState(new GamejoltApiState());
 		}
 	}
 }

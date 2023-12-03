@@ -1,8 +1,11 @@
 package beatdown;
 
+import beatdown.states.*;
+import beatdown.system.*;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
+import flixel.addons.api.FlxGameJolt;
 import flixel.addons.display.FlxBackdrop;
 import flixel.addons.display.FlxGridOverlay;
 import flixel.addons.effects.FlxTrail;
@@ -11,11 +14,11 @@ import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
 import lime.app.Application;
+import networking.utils.NetworkMode;
 #if discord_rpc
 import beatdown.system.Discord.DiscordClient;
 import beatdown.system.Discord;
 #end
-import beatdown.states.*;
 
 class LogoSplash extends FlxState
 {
@@ -23,6 +26,8 @@ class LogoSplash extends FlxState
 	var otherLogo:FlxSprite;
 	var penisMcDildo:FlxBackdrop;
 	var logoTrail:FlxTrail;
+
+	public static var discordJoin:Bool = false;
 
 	override public function create()
 	{
@@ -56,11 +61,20 @@ class LogoSplash extends FlxState
 		});
 		#end
 
+		FlxGameJolt.init(GJKeys.id, GJKeys.key);
+		if (FlxG.save.data.gjUser != null)
+			FlxGameJolt.authUser(FlxG.save.data.gjUser, FlxG.save.data.gjToken);
+
 		super.create();
 	}
 
 	override public function update(elapsed:Float)
 	{
+		if (FlxG.keys.justPressed.SPACE)
+		{
+			FlxG.switchState(new TitleMenuState());
+		}
+
 		super.update(elapsed);
 	}
 

@@ -1,104 +1,85 @@
 package beatdown.states;
 
+import beatdown.system.*;
 import flixel.FlxG;
-import flixel.FlxState;
 import flixel.FlxSprite;
-import flixel.text.FlxText;
-import flixel.math.FlxMath;
-import flixel.util.FlxColor;
+import flixel.FlxState;
 import flixel.group.FlxSpriteGroup;
-//online shits
+import flixel.math.FlxMath;
+import flixel.text.FlxText;
+import flixel.util.FlxColor;
 import networking.Network;
 import networking.sessions.Session;
 import networking.utils.NetworkEvent;
 import networking.utils.NetworkMode;
-import SessionData;
+#if discord_rpc
+import beatdown.system.Discord.DiscordClient;
+import beatdown.system.Discord;
+#end
 
-
+// online shits
 class OnlineLobbyState extends FlxState
 {
-    public static var playerList:Array<Int> = [0];
-    
-    public static var yourPlayerID:Int = 0;
-    public static var setplayerid:Bool = false;
+	var fartgroup:FlxSpriteGroup;
+	var thingypositions:Array<Float> = [0, 0, 0, 0];
 
-    var fartgroup:FlxSpriteGroup;
+	var debugText:FlxText;
 
-    var debugText:FlxText;
+	var colors = [0xFFFF0000, 0xFF00A2FF, 0xFFFFB700, 0xFF00EB00];
 
-    var colors = [0xFFFF0000, 0xFF00A2FF, 0xFFFFE100, 0xFF00EB00];
+	override public function create()
+	{
+		fartgroup = new FlxSpriteGroup();
+		add(fartgroup);
 
-    public static var playerx:Array<Float> = [0, 0, 0, 0];
+		for (i in 0...4)
+		{
+			var playerSQ:FlxSprite = new FlxSprite().loadGraphic(Paths.image('onlineLobby/thing'));
+			playerSQ.setGraphicSize(290, 0);
+			playerSQ.x = i * 300;
+			playerSQ.ID = i;
+			playerSQ.screenCenter(Y);
+			fartgroup.add(playerSQ);
+		}
 
-    //ALL TEST SHIT AND BECAUSE I WANNA LOL
-    var sx:Float = 0;
-    var lastx:Float = 0; //this is because it lags like a motherfucker whenever a message is sent across the server for every update, which is understandable
+		debugText = new FlxText(0, 0, 1280, 'Player ', 40, true);
+		debugText.screenCenter();
+		add(debugText);
 
-    override public function create()
-    {
-        fartgroup = new FlxSpriteGroup();
-        add(fartgroup);
+		if (SessionData._session.mode == SERVER)
+		{
+			SessionData._PLAYERID = 0;
+			trace('hi');
+		}
 
-        for (i in 0...4)
-        {
-            var playerSQ:FlxSprite = new FlxSprite().makeGraphic(200, 200, colors[i]);
-            playerSQ.x = i * 300;
-            playerx[i] = playerSQ.x;
-            playerSQ.ID = i;
-            playerSQ.screenCenter(Y);
-            fartgroup.add(playerSQ);
-        }
+		super.create();
+	}
 
-        debugText = new FlxText(0, 0, 1280, 'Player ', 40, true);
-        debugText.screenCenter();
-        add(debugText);
+	override public function update(elapsed:Float)
+	{
+		debugText.text = 'Player ' + (SessionData._PLAYERID + 1);
 
-        super.create();
-    }
-    
-    override public function update(elapsed:Float)
-    {
-        debugText.text = 'Player ' + (yourPlayerID + 1);
+		updatePlayerCount();
 
-        updatePlayerCount();
+		super.update(elapsed);
+	}
 
-        doPlayerMoveStuff();
+	function updatePlayerCount()
+	{
+		for (i in 0...fartgroup.length)
+		{
+			if (fartgroup.members[i].ID <= SessionData._PLAYERS)
+			{
+				fartgroup.members[i].color = colors[fartgroup.members[i].ID];
+			}
+			else
+			{
+				fartgroup.members[i].color = FlxColor.WHITE;
+			}
+		}
 
-        super.update(elapsed);
-    }
-
-    function updatePlayerCount()
-    {
-        for (i in 0...fartgroup.length)
-        {
-            fartgroup.members[i].alpha = 0;
-            fartgroup.members[i].x = playerx[i];
-
-            if(fartgroup.members[i].ID <= playerList.length - 1)
-            {
-                fartgroup.members[i].alpha = 1;
-            }
-        }
-    }
-
-    function doPlayerMoveStuff()
-    {
-        if (FlxG.keys.pressed.LEFT)
-        {
-            sx -= 1.5;
-        }
-        if (FlxG.keys.pressed.RIGHT)
-        {
-            sx += 1.5;
-        }
-        sx = (sx * 0.9);
-
-        playerx[yourPlayerID] += sx;
-
-        if (lastx != playerx[yourPlayerID])
-        {
-            SessionData.handlePlayerShit('move', yourPlayerID);
-            lastx = playerx[yourPlayerID];
-        }
-    }
+		#if discord_rpc
+		DiscordClient.changePresence('Playing Online', 'In a party', 'main', null, '1234', SessionData._PLAYERS + 1, 4);
+		#end
+	}
 }

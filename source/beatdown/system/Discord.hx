@@ -1,7 +1,10 @@
 package beatdown.system;
 
 import Sys.sleep;
+import beatdown.states.*;
 import discord_rpc.DiscordRpc;
+import flixel.FlxG;
+import networking.utils.NetworkMode;
 
 using StringTools;
 
@@ -16,7 +19,8 @@ class DiscordClient
 			clientID: "1178373679948779530",
 			onReady: onReady,
 			onError: onError,
-			onDisconnected: onDisconnected
+			onDisconnected: onDisconnected,
+			onJoin: onJoin
 		});
 		trace("Discord Client started.");
 
@@ -55,6 +59,15 @@ class DiscordClient
 		trace('Disconnected! $_code : $_message');
 	}
 
+	static function onJoin(_joinSecret:String)
+	{
+		SessionData.start(NetworkMode.CLIENT, {
+			ip: '127.0.0.1',
+			port: 1234
+		});
+		FlxG.switchState(new OnlineLobbyState());
+	}
+
 	public static function initialize()
 	{
 		var DiscordDaemon = sys.thread.Thread.create(() ->
@@ -65,13 +78,21 @@ class DiscordClient
 		isInitialized = true;
 	}
 
-	public static function changePresence(details:String, state:Null<String>, largeImageKey:String)
+	public static function changePresence(details:String, state:Null<String>, largeImageKey:String, ?smallImageKey:String, ?partyID:String, ?partySize:Int,
+			?partyMax:Int, ?spectateSecret:String, ?joinSecret:String, ?matchSecret:String)
 	{
 		DiscordRpc.presence({
 			details: details,
 			state: state,
 			largeImageKey: largeImageKey,
 			largeImageText: "Ballman Beatdown",
+			smallImageKey: smallImageKey,
+			partyID: partyID,
+			partySize: partySize,
+			partyMax: partyMax,
+			matchSecret: matchSecret,
+			joinSecret: joinSecret,
+			spectateSecret: spectateSecret,
 		});
 
 		// trace('Discord RPC Updated. Arguments: $details, $state, $smallImageKey, $hasStartTimestamp, $endTimestamp');

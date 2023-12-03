@@ -1,106 +1,94 @@
 package beatdown.system;
 
+import beatdown.states.*;
 import flixel.FlxG;
-import networking.sessions.Session;
+import lime.app.Application;
 import networking.Network;
+import networking.sessions.Session;
 import networking.utils.NetworkEvent;
 import networking.utils.NetworkMode;
 
-import lime.app.Application;
-import beatdown.states.*;
-
 class SessionData
 {
-    public static var _session:Session;
+	public static var _session:Session;
 
-    public static function start(mode:NetworkMode, params:Dynamic)
+	public static var _PLAYERS:Int = 0;
+	public static var _PLAYERID:Int = -1;
+
+	// it goes [PlayerNum, Name, Fighter Chosen, Status (Ready, not ready, spectate)]
+	public static var _PLAYERINFO:Array<Dynamic> = [['p0', '', '', ''], ['p1', '', '', ''], ['p2', '', '', ''], ['p3', '', '', '']];
+
+	public static function start(mode:NetworkMode, params:Dynamic)
 	{
 		_session = Network.registerSession(mode, params);
 
-        _session.addEventListener(NetworkEvent.CONNECTED, onConnected);
-        _session.addEventListener(NetworkEvent.MESSAGE_RECEIVED, onMessageRecieved);
-        _session.addEventListener(NetworkEvent.DISCONNECTED, onDisconnect);
+		_session.addEventListener(NetworkEvent.CONNECTED, onConnected);
+		_session.addEventListener(NetworkEvent.MESSAGE_RECEIVED, onMessageRecieved);
+		_session.addEventListener(NetworkEvent.DISCONNECTED, onDisconnect);
 
 		_session.start();
 	}
 
-    public static function onMessageRecieved(e:NetworkEvent)
-        {
-            trace('message ' + _session.mode);
-            switch(_session.mode)
-            {
-                case SERVER:
-                    switch (e.verb)
-                    {
-                        case 'playerJoin':
-                            trace('pushed server');
-                            OnlineLobbyState.playerList.push(0);
-                        case 'disconnect':
-                            OnlineLobbyState.playerList.remove(0);
-                    }  
-                case CLIENT:
-                    switch(e.verb)
-                    {
-                        case 'updatePC':
-                            OnlineLobbyState.playerList.resize(e.data.val + 1);
+	public static function onMessageRecieved(e:NetworkEvent)
+	{
+		trace('message ' + _session.mode);
+		switch (_session.mode)
+		{
+			case SERVER:
+				switch (e.verb)
+				{
+					case 'playerJoin':
+						_PLAYERS += 1;
+						trace('pushed server');
+					case 'disconnect':
+						_PLAYERS -= 1;
+				}
+			case CLIENT:
+				switch (e.verb)
+				{
+					case 'updatePC':
+						_PLAYERS = e.data.val;
 
-                            if (!OnlineLobbyState.setplayerid)
-                            {
-                                OnlineLobbyState.yourPlayerID = e.data.val;
-                                OnlineLobbyState.setplayerid = true;
-                            }
-                    }
-            }
+						if (_PLAYERID == -1)
+						{
+							_PLAYERID = e.data.val;
+						}
+				}
+		}
+	}
 
-            switch(e.verb)
-            {
-                case 'playerMove':
-                    OnlineLobbyState.playerx[e.data.p] = e.data.tx;
-                    trace('got move player message');
-            }
-        }
+	public static function onConnected(e:NetworkEvent)
+	{
+		SessionData._session.send({verb: "playerJoin"});
 
-    public static function onConnected(e:NetworkEvent)
-    {
-        SessionData._session.send({verb: "playerJoin"});
+		switch (_session.mode)
+		{
+			case SERVER:
+				trace(_PLAYERS);
+				_session.send({verb: "updatePC", val: _PLAYERS + 1});
+				// _session.send({verb: 'updateInfo', val: })
+				trace('Server connected!');
+			case CLIENT:
+				trace('Client connected!');
+		}
+	}
 
-        switch (_session.mode)
-        {
-            case SERVER:
-                SessionData._session.send({verb: "updatePC", val: OnlineLobbyState.playerList.length});
-                trace ('Server connected!');
-                OnlineLobbyState.yourPlayerID = 0;   
-                
-                for (i in 0...OnlineLobbyState.playerList.length)
-                {
-                    SessionData._session.send({verb: "playerMove", p: i, tx: OnlineLobbyState.playerx[i]});
-                }
-            case CLIENT:
-                trace ('Client connected!');
-        }
-    }
+	public static function onDisconnect(e:NetworkEvent)
+	{
+		SessionData._session.send({verb: "disconnect"});
 
-    public static function onDisconnect(e:NetworkEvent)
-    {
-        SessionData._session.send({verb: "disconnect"});
+		trace('butt');
+		switch (_session.mode)
+		{
+			case SERVER:
+				SessionData._session.send({verb: "updatePC", val: _PLAYERS + 1});
+			case CLIENT:
+				trace('negro thompson');
+		}
+	}
 
-        trace('butt');
-        switch(_session.mode)
-        {
-            case SERVER:
-                OnlineLobbyState.playerList.remove(0);
-                SessionData._session.send({verb: "updatePC", val: OnlineLobbyState.playerList.length});
-            case CLIENT:
-                trace('negro thompson');
-        }
-    }
-
-    public static function handlePlayerShit(type:String, player:Int)
-    {
-        switch(type)
-        {
-            case 'move':
-                _session.send({verb: "playerMove", p: player, tx: OnlineLobbyState.playerx[player]});
-        }
-    }
+	public static function handlePlayerShit(type:String, player:Int)
+	{
+		// penis mcdildo
+	}
 }

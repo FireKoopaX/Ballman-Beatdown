@@ -1,8 +1,9 @@
 package;
 
+import beatdown.*;
+import beatdown.states.OnlineMenuState;
 import flixel.FlxGame;
 import openfl.display.Sprite;
-import beatdown.*;
 
 class Main extends Sprite
 {

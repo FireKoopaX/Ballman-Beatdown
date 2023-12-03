@@ -1,11 +1,12 @@
 package beatdown.states;
 
-import SessionData;
+import beatdown.system.*;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.addons.display.FlxBackdrop;
 import flixel.addons.display.FlxGridOverlay;
+import flixel.addons.ui.FlxInputText;
 import flixel.group.FlxSpriteGroup;
 import flixel.math.FlxMath;
 import flixel.text.FlxText;
@@ -24,6 +25,8 @@ class OnlineMenuState extends FlxState
 	var joinLobby:FlxSprite;
 	var makeLobby:FlxSprite;
 
+	public static var nameInput:FlxInputText;
+
 	override public function create()
 	{
 		var bgthing:FlxBackdrop = new FlxBackdrop(FlxGridOverlay.createGrid(80, 80, 160, 160, true, 0xFFEDEDED, 0xFFABABAB));
@@ -39,6 +42,24 @@ class OnlineMenuState extends FlxState
 		makeLobby.x = 776.5;
 		makeLobby.screenCenter(Y);
 		add(makeLobby);
+
+		var blackBorderThing:FlxSprite = new FlxSprite().makeGraphic(550, 70, 0x70000000);
+		blackBorderThing.x = 710;
+		blackBorderThing.y = 22;
+		add(blackBorderThing);
+
+		var nameThing:FlxText = new FlxText(0, 0, 550, " Name:", 40, true);
+		nameThing.setFormat(Paths.font('pixel-comic-sans-undertale-sans-font', 'ttf'), 45);
+		nameThing.x = 730;
+		nameThing.y = 33;
+		add(nameThing);
+
+		nameInput = new FlxInputText(0, 0, 300, "", 40, FlxColor.BLACK, FlxColor.WHITE, false);
+		nameInput.x = 950;
+		nameInput.y = 30;
+		nameInput.fieldBorderColor = FlxColor.TRANSPARENT;
+		nameInput.maxLength = 10;
+		add(nameInput);
 
 		super.create();
 	}
@@ -69,14 +90,16 @@ class OnlineMenuState extends FlxState
 				switch (curSelected)
 				{
 					case 0: // join
-						SessionData.start(NetworkMode.CLIENT, {ip: '127.0.0.1', port: 9696});
+						SessionData.start(NetworkMode.CLIENT, {
+							ip: '127.0.0.1',
+							port: 1234
+						});
 						FlxG.switchState(new OnlineLobbyState());
 					case 1: // create
 						SessionData.start(NetworkMode.SERVER, {
-							ip: '127.0.0.1',
-							port: 9696,
+							ip: '0.0.0.0',
+							port: 1234,
 							max_connections: 4,
-							uuid: 'poop'
 						});
 						trace('created server');
 						FlxG.switchState(new OnlineLobbyState());
