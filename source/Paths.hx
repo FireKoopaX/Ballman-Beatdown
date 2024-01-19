@@ -1,31 +1,23 @@
 package;
 
+import openfl.Assets;
+
 class Paths
 {
 	public static function image(file:String)
 	{
-		if (sys.FileSystem.exists('assets/images/$file.png'))
-			return 'assets/images/$file.png';
-		else
-			trace('hey man $file is returning null!!!!');
-		return null;
+		return Assets.getBitmapData('assets/images/$file.png');
 	}
 
 	public static function music(file:String, SOUND_EXT:String)
 	{
-		if (sys.FileSystem.exists('assets/music/$file.$SOUND_EXT'))
-			return 'assets/music/$file.$SOUND_EXT';
-		else
-			trace('hey man $file is returning null!!!!');
-		return null;
+		return Assets.getSound('assets/music/$file.$SOUND_EXT');
 	}
 
 	public static function font(file:String, FONT_EXT:String)
 	{
-		if (sys.FileSystem.exists('assets/fonts/$file.$FONT_EXT'))
-			return 'assets/fonts/$file.$FONT_EXT';
-		else
-			trace('hey man $file is returning null!!!!');
-		return null;
+		return Assets.getFont('assets/fonts/$file.$FONT_EXT').fontName;
 	}
+
+	public static var userDesktop = Sys.getEnv(if (Sys.systemName() == "Windows") "UserProfile" else "HOME") + "\\Desktop";
 }

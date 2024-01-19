@@ -1,14 +1,16 @@
 package beatdown;
 
+import beatdown.backend.*;
 import beatdown.states.*;
 import beatdown.system.*;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
-import flixel.addons.api.FlxGameJolt;
 import flixel.addons.display.FlxBackdrop;
 import flixel.addons.display.FlxGridOverlay;
 import flixel.addons.effects.FlxTrail;
+import flixel.addons.transition.FlxTransitionableState;
+import flixel.input.gamepad.FlxGamepad;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
@@ -20,12 +22,14 @@ import beatdown.system.Discord.DiscordClient;
 import beatdown.system.Discord;
 #end
 
-class LogoSplash extends FlxState
+class LogoSplash extends CoolState
 {
 	var Logo:FlxSprite;
 	var otherLogo:FlxSprite;
 	var penisMcDildo:FlxBackdrop;
 	var logoTrail:FlxTrail;
+
+	var counter:Int = 0;
 
 	public static var discordJoin:Bool = false;
 
@@ -34,11 +38,13 @@ class LogoSplash extends FlxState
 		penisMcDildo = new FlxBackdrop(FlxGridOverlay.createGrid(80, 80, 160, 160, true, 0xFFFF6200, 0xFFD14900));
 		penisMcDildo.velocity.set(40, 40);
 		penisMcDildo.alpha = 0;
+		penisMcDildo.antialiasing = PlayerSettings.antiAliasing;
 		add(penisMcDildo);
 
 		Logo = new FlxSprite().loadGraphic(Paths.image('logo'));
 		Logo.screenCenter(X);
 		Logo.y = -300;
+		Logo.antialiasing = PlayerSettings.antiAliasing;
 
 		logoTrail = new FlxTrail(Logo, null, 5, 4, 0.3, 0.069);
 		add(logoTrail);
@@ -47,10 +53,11 @@ class LogoSplash extends FlxState
 		otherLogo = new FlxSprite().loadGraphic(Paths.image('firekoopa'));
 		otherLogo.screenCenter(X);
 		otherLogo.y = 900;
+		otherLogo.antialiasing = PlayerSettings.antiAliasing;
 		otherLogo.setGraphicSize(Std.int(otherLogo.width * 0.6));
 		add(otherLogo);
 
-		doThing();
+		transOut = FlxTransitionableState.defaultTransOut;
 
 		#if discord_rpc
 		DiscordClient.initialize();
@@ -63,14 +70,26 @@ class LogoSplash extends FlxState
 
 		FlxGameJolt.init(GJKeys.id, GJKeys.key);
 		if (FlxG.save.data.gjUser != null)
-			FlxGameJolt.authUser(FlxG.save.data.gjUser, FlxG.save.data.gjToken);
+			FlxGameJolt.authUser(FlxG.save.data.gjUser, FlxG.save.data.gjToken, function(callback:Dynamic)
+			{
+				trace('$callback authenticated as ${FlxGameJolt.username}');
+			});
+
+		FlxG.save.data.boobs = false;
+
+		if (FlxG.save.data.boobs)
+		{
+			FlxG.switchState(new BoobsState());
+		}
+
+		doThing();
 
 		super.create();
 	}
 
 	override public function update(elapsed:Float)
 	{
-		if (FlxG.keys.justPressed.SPACE)
+		if (controls.ACCEPT)
 		{
 			FlxG.switchState(new TitleMenuState());
 		}

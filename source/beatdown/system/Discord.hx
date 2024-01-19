@@ -41,12 +41,24 @@ class DiscordClient
 
 	static function onReady()
 	{
-		DiscordRpc.presence({
-			details: "In the Menus",
-			state: null,
-			largeImageKey: 'main',
-			largeImageText: "Ballman Beatdown"
-		});
+		if (FlxG.save.data.boobs)
+		{
+			DiscordRpc.presence({
+				details: "???",
+				state: 'What the fuck',
+				largeImageKey: 'boobs',
+				largeImageText: "Ballman Beatdown"
+			});
+		}
+		else
+		{
+			DiscordRpc.presence({
+				details: "In the Menus",
+				state: null,
+				largeImageKey: 'main',
+				largeImageText: "Ballman Beatdown"
+			});
+		}
 	}
 
 	static function onError(_code:Int, _message:String)

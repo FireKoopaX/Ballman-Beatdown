@@ -5,12 +5,13 @@ import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.addons.display.FlxBackdrop;
 import flixel.addons.display.FlxGridOverlay;
+import flixel.addons.transition.FlxTransitionableState;
 import flixel.math.FlxMath;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 
-class StoryMenuState extends FlxState
+class StoryMenuState extends CoolState
 {
 	var backgroundthing:FlxBackdrop;
 
@@ -45,6 +46,9 @@ class StoryMenuState extends FlxState
 		backButton.y = 40;
 		add(backButton);
 
+		transIn = FlxTransitionableState.defaultTransIn;
+		transOut = FlxTransitionableState.defaultTransOut;
+
 		FlxTween.tween(singleplayerButton, {x: 704}, 0.7, {ease: FlxEase.cubeOut});
 		FlxTween.tween(multiplayerButton, {x: 724}, 0.7, {
 			ease: FlxEase.cubeOut,
@@ -66,7 +70,7 @@ class StoryMenuState extends FlxState
 
 			if (FlxG.mouse.justPressed)
 			{
-				FlxG.switchState(new TitleMenuState());
+				CoolState.switchState(new TitleMenuState());
 			}
 		}
 		else

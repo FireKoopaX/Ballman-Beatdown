@@ -4,6 +4,7 @@ import beatdown.system.*;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
+import flixel.addons.transition.FlxTransitionableState;
 import flixel.group.FlxSpriteGroup;
 import flixel.math.FlxMath;
 import flixel.text.FlxText;
@@ -18,7 +19,7 @@ import beatdown.system.Discord;
 #end
 
 // online shits
-class OnlineLobbyState extends FlxState
+class OnlineLobbyState extends CoolState
 {
 	var fartgroup:FlxSpriteGroup;
 	var thingypositions:Array<Float> = [0, 0, 0, 0];
@@ -45,6 +46,9 @@ class OnlineLobbyState extends FlxState
 		debugText = new FlxText(0, 0, 1280, 'Player ', 40, true);
 		debugText.screenCenter();
 		add(debugText);
+
+		transIn = FlxTransitionableState.defaultTransIn;
+		transOut = FlxTransitionableState.defaultTransOut;
 
 		if (SessionData._session.mode == SERVER)
 		{

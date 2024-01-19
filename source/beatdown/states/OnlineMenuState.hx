@@ -6,6 +6,7 @@ import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.addons.display.FlxBackdrop;
 import flixel.addons.display.FlxGridOverlay;
+import flixel.addons.transition.FlxTransitionableState;
 import flixel.addons.ui.FlxInputText;
 import flixel.group.FlxSpriteGroup;
 import flixel.math.FlxMath;
@@ -17,7 +18,7 @@ import networking.utils.NetworkEvent;
 import networking.utils.NetworkMode;
 
 // online shits
-class OnlineMenuState extends FlxState
+class OnlineMenuState extends CoolState
 {
 	var curSelected:Int = 0;
 	var selectedsum:Bool = false;
@@ -53,6 +54,9 @@ class OnlineMenuState extends FlxState
 		nameThing.x = 730;
 		nameThing.y = 33;
 		add(nameThing);
+
+		transIn = FlxTransitionableState.defaultTransIn;
+		transOut = FlxTransitionableState.defaultTransOut;
 
 		nameInput = new FlxInputText(0, 0, 300, "", 40, FlxColor.BLACK, FlxColor.WHITE, false);
 		nameInput.x = 950;
