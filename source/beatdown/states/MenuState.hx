@@ -2,22 +2,18 @@ package beatdown.states;
 
 import beatdown.*;
 import beatdown.backend.*;
+import beatdown.states.options.*;
 import flash.events.KeyboardEvent;
 import flash.system.System;
 import flixel.FlxG;
 import flixel.FlxSprite;
-import flixel.FlxState;
 import flixel.addons.display.FlxBackdrop;
 import flixel.addons.display.FlxGridOverlay;
-import flixel.addons.transition.FlxTransitionableState;
 import flixel.group.FlxSpriteGroup;
 import flixel.math.FlxMath;
-import flixel.text.FlxText;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
-import flixel.util.FlxTimer;
-import sys.FileSystem;
 import sys.io.File;
 #if discord_rpc
 import beatdown.system.Discord.DiscordClient;
@@ -56,8 +52,8 @@ class MenuState extends CoolState
 			type: PINGPONG
 		});
 
-		menubg = new FlxBackdrop(FlxGridOverlay.createGrid(80, 80, 160, 160, true, 0x0, 0x44000000));
-		menubg.velocity.x = 40;
+		menubg = new FlxBackdrop(FlxGridOverlay.createGrid(80, 80, 160, 160, true, 0x0, 0x60000000));
+		menubg.velocity.x = 30;
 		menubg.antialiasing = PlayerSettings.antiAliasing;
 		add(menubg);
 
@@ -163,10 +159,14 @@ class MenuState extends CoolState
 			curSelected = 0;
 		if (curSelected < 0)
 			curSelected = buttonList.length - 1;
+
+		FlxG.sound.play(Paths.sound('scroll'));
 	}
 
 	function docoolshit()
 	{
+		FlxG.sound.play(Paths.sound('select'));
+
 		FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN, onKeyDown, true);
 		switch (curSelected)
 		{
@@ -177,7 +177,7 @@ class MenuState extends CoolState
 			case 2:
 			// FlxG.switchState(new PracticeMenuState());
 			case 3:
-			// FlxG.switchState(new OptionsMenuState());
+				FlxG.switchState(new OptionsState());
 			case 5:
 			// fewiuhf
 			case 6:

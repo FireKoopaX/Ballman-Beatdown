@@ -1,6 +1,7 @@
 package beatdown;
 
 import beatdown.backend.Controls;
+import beatdown.objects.GamejoltPopup;
 import flixel.FlxCamera;
 import flixel.FlxG;
 import flixel.FlxSprite;
@@ -13,9 +14,6 @@ import openfl.Lib;
 
 class CoolState extends FlxUIState
 {
-	public static var defCam:FlxCamera;
-	public static var altCam:FlxCamera;
-
 	var fadeIn:Bool = true;
 	var fadeOut:Bool = true;
 
@@ -28,13 +26,6 @@ class CoolState extends FlxUIState
 
 	override function create()
 	{
-		defCam = new FlxCamera();
-		altCam = new FlxCamera();
-		altCam.bgColor.alpha = 0;
-
-		FlxG.cameras.reset(defCam);
-		FlxG.cameras.add(altCam, false);
-
 		super.create();
 	}
 
@@ -43,5 +34,11 @@ class CoolState extends FlxUIState
 		FlxG.fullscreen = true;
 
 		super.update(elapsed);
+	}
+
+	public static function gjPopup()
+	{
+		var penis = new GamejoltPopup();
+		Lib.current.addChild(penis);
 	}
 }

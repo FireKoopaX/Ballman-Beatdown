@@ -1,6 +1,8 @@
 package beatdown;
 
 import flixel.FlxG;
+import flixel.FlxObject;
+import openfl.geom.Matrix;
 import sys.FileSystem;
 import sys.io.File;
 
@@ -28,5 +30,10 @@ class CoolUtil
 		{
 			trace("bruh");
 		}
+	}
+
+	public static function skewSprite(spr:FlxObject)
+	{
+		var _matrix:Matrix = new Matrix();
 	}
 }

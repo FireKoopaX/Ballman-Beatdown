@@ -148,15 +148,24 @@ class GamejoltApiState extends CoolState
 		userProfile.loadGraphic(Bits);
 		userProfile.x = blackBox.x + 9;
 		userProfile.screenCenter(Y);
-	}
 
-	function apiReturn(map:Map<String, String>)
-	{
+		var map = FlxGameJolt.returnMap;
+
 		var bignametext:FlxText = new FlxText(0, 0, 500, '${map.get('developer_name')} (${map.get('username')})', 45, true);
 		trace(map.get('developer_name'));
 		bignametext.setFormat(null, 45, FlxColor.WHITE, CENTER, OUTLINE, FlxColor.BLACK);
-		bignametext.x = 600;
-		bignametext.y = 200;
+		bignametext.x = 700;
+		bignametext.y = 150;
 		add(bignametext);
+
+		var otherInfotext:FlxText = new FlxText(0, 0, 500, '', 45, true);
+		otherInfotext.setFormat(null, 25, FlxColor.WHITE, CENTER, OUTLINE, FlxColor.BLACK);
+		otherInfotext.x = 700;
+		otherInfotext.y = 300;
+		add(otherInfotext);
+
+		otherInfotext.text = 'Last Logged In: ${map.get('last_logged_in')}
+		Signed Up: ${map.get('signed_up')}
+		Type: ${map.get('type')}';
 	}
 }
